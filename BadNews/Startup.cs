@@ -38,6 +38,7 @@ namespace BadNews
             services.AddSingleton<Repositories.Comments.CommentsRepository>();
             services.Configure<OpenWeatherOptions>(configuration.GetSection("OpenWeather"));
             services.AddSignalR();
+            services.AddServerSideBlazor();
             services.AddResponseCompression(options =>
             {
                 options.EnableForHttps = true;
@@ -59,18 +60,7 @@ namespace BadNews
             app.UseHttpsRedirection();
             app.UseResponseCompression();
             
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                OnPrepareResponse = options =>
-                {
-                    options.Context.Response.GetTypedHeaders().CacheControl =
-                        new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
-                        {
-                            Public = false,
-                            MaxAge = TimeSpan.FromDays(1)
-                        };
-                }
-            });
+            app.UseStaticFiles();
             app.UseSerilogRequestLogging();
             app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 
@@ -85,6 +75,7 @@ namespace BadNews
                 });
                 endpoints.MapControllerRoute("default", "{controller=News}/{action=Index}/{id?}");
                 endpoints.MapHub<CommentsHub>("/commentsHub");
+                endpoints.MapBlazorHub();
             });
             app.MapWhen(context => context.Request.IsElevated(), branchApp =>
             {
