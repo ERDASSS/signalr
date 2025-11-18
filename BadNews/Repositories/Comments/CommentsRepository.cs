@@ -10,7 +10,7 @@ namespace BadNews.Repositories.Comments
             return new[]
             {
                 new Comment("Вася", "Здесь был Вася!"),
-                new Comment("Воробушек", "ЧИК-ЧИРИК"),
+                new Comment("Воробушек", "a"),
             };
         }
     }
